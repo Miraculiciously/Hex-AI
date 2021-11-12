@@ -22,18 +22,6 @@ class Board:
         self.red_side = itertools.product(np.arange(0, N), np.arange(N ** 2 - N, N ** 2))
         self.blue_side = itertools.product(np.arange(0, N ** 2 - N + 1, N), np.arange(N - 1, N ** 2, N))
 
-    def game_finished(self, player_color) -> bool:
-        isolated = self.G.subgraph([n for n in self.G.nodes if self.colors[n] == player_color])
-        if player_color == "red":
-            if any([nx.has_path(isolated, x, y) for (x, y) in self.red_side if (x in isolated and y in isolated.nodes)]):
-                print(player_color, "wins!")
-                return True
-        else:
-            if any([nx.has_path(isolated, x, y) for (x, y) in self.blue_side if (x in isolated and y in isolated.nodes)]):
-                print(player_color, "wins!")
-                return True
-        return False
-
     def draw_boad(self) -> None:
         nx.draw(self.G, with_labels=True, node_color=self.colors)
         plt.show()
@@ -46,10 +34,9 @@ if __name__ == '__main__':
     board = Board(4)
     board.draw_boad()
     board.make_move(1, "red")
-    board.make_move(2, "red")
+    board.make_move(0, "red")
     board.make_move(5, "red")
     board.make_move(9, "red")
     board.make_move(13, "red")
     board.make_move(14, "red")
     board.draw_boad()
-    print(board.game_finished("red"))
