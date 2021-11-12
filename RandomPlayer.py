@@ -8,7 +8,6 @@ class RandomPlayer:
         self.own_color = color
 
     def get_move(self, board: Board):
-        board.draw_boad()
         valid_moves = [n for n in range(0,board.N**2) if board.colors[n] == 'white']
         return np.random.choice(valid_moves)
 
