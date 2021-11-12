@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 class Board:
     def __init__(self, N=11):
+        self.N = N
         self.game_network = np.zeros((N ** 2, N ** 2))
         for i in range(0, N ** 2 - 1):
             if i % N != N - 1:
