@@ -1,4 +1,5 @@
 import itertools
+from networkx.drawing.nx_pylab import draw
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
