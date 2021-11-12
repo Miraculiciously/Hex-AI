@@ -3,12 +3,13 @@ import networkx as nx
 
 from Board import Board
 from HumanPlayer import HumanPlayer
+from RandomPlayer import RandomPlayer
 
 
 class Game:
     def __init__(self):
         self.board = Board(4)
-        self.blue_player = HumanPlayer("blue")
+        self.blue_player = RandomPlayer("blue")
         self.red_player = HumanPlayer("red")
         self.blue_player_turn = True
 
