@@ -12,7 +12,14 @@ class HumanPlayer:
         while selected is None:
             try:
                 selected = int(input("Select field: "))
-                # Is the selection valid in itself and within the range?
+                if  not 0 <= selected <= board.N**2 - 1:
+                    print("It has to be an integer between 0 and", board.N**2 -1)
+                    selected = None
             except ValueError:
-                print("It has to be a number")
+                print("It has to be an integer between 0 and", board.N**2 -1)
         return selected
+
+if __name__ == "__main__":
+    board = Board(4)
+    humanplayer = HumanPlayer("red")
+    humanplayer.get_move(board)
