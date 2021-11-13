@@ -11,8 +11,11 @@ class HumanPlayer:
         print("Your color is " + self.own_color)
         while selected is None:
             try:
-                selected = int(input("Select field: "))
+                split_move = input("Select x and y of field (x, y): ").split(",")
+                selected = (int(split_move[0]), int(split_move[1]))
                 # Is the selection valid in itself and within the range?
             except ValueError:
-                print("It has to be a number")
+                print("It has to be 2 numbers separated by a ','")
+            except IndexError:
+                print("Please type 2 numbers separated by a ','")
         return selected
