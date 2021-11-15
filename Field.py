@@ -1,5 +1,6 @@
 import tkinter as tk
 from math import cos, sin, radians, sqrt
+import numpy as np
 
 
 
@@ -8,6 +9,8 @@ class GUI:
         # Initialise all that the baord needs
         self.N = N
         self.colors = ['white' for n in range(N**2)]
+        self.first_move = True
+        self.swap_rule = True
 
     def hex_coordinates(self, x, y):
         points = [x, y]
@@ -44,14 +47,29 @@ class GUI:
                     )
         
         self.app.mainloop()
+
+    def check_move(self, index: int, color: str) -> bool:
+        if self.swap_rule:
+            valid_moves = range(self.N**2)
+            self.swap_rule = False
+        else:
+            valid_moves = [n for n in range(self.N**2) if self.colors[n] == 'white']
+        
+        if index in valid_moves: return True
+        else: return False
     
     def make_move(self, index, color: str):
-        assert(color == "red" or color == "blue")
-        self.colors[index] = color
+        if self.first_move:
+            self.colors[index] = color
+            self.first_move = False
+        elif gui.check_move(index, color):
+            self.colors[index] = color
+        else:
+            print("Invalid move, choose again.")
 
 
 if __name__ == '__main__':
     gui = GUI()
-    gui.draw_field()
-    #gui.make_move(3, "red")
-    #gui.draw_field()
+    gui.make_move(3, "red")
+    gui.make_move(3, "blue")
+    gui.make_move(3, "red")
