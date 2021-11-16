@@ -8,7 +8,7 @@ class HumanPlayer:
     def get_move(self, board: Board):
         board.draw_boad()
         selected = None
-        print("Your color is " + self.own_color)
+        print("Your color is ", self.own_color)
         while selected is None:
             try:
                 split_move = input("Select x and y of field (x, y): ").split(",")

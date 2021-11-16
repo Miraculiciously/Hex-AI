@@ -14,8 +14,8 @@ class Game:
     """
     def __init__(self):
         self.board = Board(4)
-        self.blue_player = RandomPlayer("blue")
-        self.red_player = HumanPlayer("red")
+        self.blue_player = RandomPlayer(2)
+        self.red_player = HumanPlayer(1)
         self.blue_player_turn = True
 
     def game_finished(self, player_color: int) -> bool:
@@ -48,7 +48,9 @@ class Game:
         return True
 
     def play_game(self):
-        while not self.game_finished(1) and not self.game_finished(2):
+        red_won = self.game_finished(1)
+        blue_won = self.game_finished(2)
+        while not red_won and not blue_won:
             if self.blue_player_turn:
                 x, y = self.blue_player.get_move(self.board)
                 self.board.make_move(x, y, 2)
@@ -56,6 +58,13 @@ class Game:
                 x, y = self.red_player.get_move(self.board)
                 self.board.make_move(x, y, 1)
             self.blue_player_turn = not self.blue_player_turn
+            red_won = self.game_finished(1)
+            blue_won = self.game_finished(2)
+        self.board.draw_boad()
+        if red_won:
+            print("Red (1) won")
+        else:
+            print("Blue (2) won")
 
 
 if __name__ == '__main__':
