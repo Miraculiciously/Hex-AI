@@ -12,6 +12,13 @@ class Board:
         plt.show()
 
     def make_move(self, x, y, color):
+        """
+        Make a move on the board by changing a cell to a specified color
+        :param x: first coordinate of cell
+        :param y: second coordinate of cell
+        :param color: red = 1, blue = 2, empty = 0
+        :return: no return
+        """
         self.board_state[x, y] = color
 
     # def make_move(self, index, color):
