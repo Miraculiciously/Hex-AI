@@ -1,17 +1,17 @@
-import copy
+from threading import Thread
 import tkinter as tk
 from math import cos, sin, radians, sqrt
-import numpy as np
-from Game import Game
 
 COLORS = {0: "white", 1: "red", 2: "blue"}
 
 
 class GUI:
-    def __init__(self, game):
+    def __init__(self, board, queue_move):
         # Initialise all that the board needs
-        self.game = game
-        self.N = game.board.N
+        self.board = board
+        self.queue_move = queue_move
+        self.N = board.N
+
         self.app = tk.Tk()
         self.side_length = 30
         # TODO this needs to be adapted according to the scale but I'm working on it maybe tonight
@@ -46,7 +46,7 @@ class GUI:
                         self.frame_boundary + sqrt(3) * self.side_length * (x + y / 2),
                         self.frame_boundary + 1.5 * y * self.side_length
                     ),
-                    fill=COLORS[self.game.get_board_state()[x, y]],
+                    fill=COLORS[self.board.board_state[x, y]],
                     outline="black",
                     width=1.25
                 )
@@ -54,14 +54,19 @@ class GUI:
         self.app.update()
 
     def on_polygon_click(self, x, y):
-        print("polygon click", x, y)
-        self.game.queue_move(x, y)
+        # print("polygon click", x, y)
+        self.queue_move(x, y)
+
+    def main_loop(self):
+        # TODO move over to calling mainloop in the main thread instead of update in a while True
+        while True:
+            self.draw_field()
 
 
-if __name__ == '__main__':
-    gui = GUI(Game())
-    # gui.make_move(0, 0, 1)
-    # gui.make_move(3, 3, 1)
-    # gui.make_move(4, 4, 2)
-    while True:
-        gui.draw_field()
+# if __name__ == '__main__':
+#     gui = GUI()
+#     # gui.make_move(0, 0, 1)
+#     # gui.make_move(3, 3, 1)
+#     # gui.make_move(4, 4, 2)
+#     while True:
+#         gui.draw_field()

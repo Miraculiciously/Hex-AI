@@ -1,25 +1,45 @@
 # holds game logic
 import numpy as np
+from threading import Thread
+from queue import Queue
 
 from Board import Board
 from HumanPlayer import HumanPlayer
+from GUIHumanPlayer import GUIHumanPlayer
 from RandomPlayer import RandomPlayer
+from Field import GUI
 
 CONNECTED_VECTORS = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, -1), (-1, 1)]
 
 
-class Game:
+class Game(Thread):
     """
     Class Game holds most of the game logic such as the win condition and is able to check whether a move is legal.
     """
     def __init__(self):
+        super().__init__()
         self.board = Board()
-        self.blue_player = HumanPlayer(2)
-        self.red_player = HumanPlayer(1)
+        self.blue_player = RandomPlayer(2)
+        self.red_player = GUIHumanPlayer(1)
         self.blue_player_turn = True
         self.next_move = None
         self.swap_rule = True
         self.first_move = True
+        self.gui = None
+        if isinstance(self.blue_player, GUIHumanPlayer) or isinstance(self.red_player, GUIHumanPlayer):
+            self.queue = Queue()
+            self.gui = GUI(self.board, self.queue_move)
+            if isinstance(self.blue_player, GUIHumanPlayer):
+                self.blue_player.pass_access_to_queue(self.get_move_from_queue)
+            if isinstance(self.red_player, GUIHumanPlayer):
+                self.red_player.pass_access_to_queue(self.get_move_from_queue)
+            self.start()
+            self.gui.main_loop()
+        else:
+            self.run()
+
+    def run(self):
+        self.play_game()
 
     def game_finished(self, player_color: int) -> bool:
         """
@@ -29,7 +49,7 @@ class Game:
         """
         # flood fill algorithm
         # Fip board if looking at the other player
-        board_mat = self.board.board_state if player_color == 1 else self.board.board_state.T
+        board_mat = self.board.board_state if player_color == 2 else self.board.board_state.T
         # Find cell of player_color on the first row
         to_explore = [(0, x[0]) for x in np.argwhere(board_mat[0] == player_color)]
         explored = set(to_explore)
@@ -66,14 +86,10 @@ class Game:
             print("Invalid move, choose again.")
 
     def queue_move(self, x, y):
-        # self.next_move = (x, y)
-        print("making move", x, y)
-        color = 1 if self.blue_player_turn else 2
-        if self.check_move(x, y, color):
-            self.make_move(x, y, color)
-            self.blue_player_turn = not self.blue_player_turn
-        else:
-            print("bad move")
+        self.queue.put((x, y))
+
+    def get_move_from_queue(self):
+        return self.queue.get()
 
     def play_game(self):
         red_won = self.game_finished(1)
@@ -88,7 +104,6 @@ class Game:
             self.blue_player_turn = not self.blue_player_turn
             red_won = self.game_finished(1)
             blue_won = self.game_finished(2)
-        self.board.draw_boad()
         if red_won:
             print("Red (1) won")
         else:
@@ -100,17 +115,3 @@ class Game:
 
 if __name__ == '__main__':
     game = Game()
-    game.play_game()
-
-    # print(game.game_finished(2))
-    # game.board.make_move(0, 0, 1)
-    # game.board.make_move(0, 2, 2)
-    # game.board.make_move(1, 2, 2)
-    # game.board.make_move(2, 2, 2)
-    # game.board.make_move(2, 2, 2)
-    # game.board.make_move(3, 1, 2)
-    # game.board.make_move(3, 0, 2)
-    # game.board.make_move(1, 3, 2)
-    # game.board.draw_boad()
-    # print(game.game_finished(2))
-
